@@ -1,47 +1,52 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { fetchWeatherData } from '../../../services/weatherService';
 import { ReactWeather } from 'reactjs-weather';
 import { WeatherRegister } from '../../../services/RESTservice';
 
 export function Search() {
-    //stato del meteo
+    // Stato del meteo
     const [weatherData, setWeatherData] = useState();
-    // barra di ricerca
+    // Stato del caricamento
+    const [loading, setLoading] = useState(false);
+    // Barra di ricerca
     const [querySearch, setQuerySearch] = useState('');
-    //stato della citta da cercare
-    const [city, setCity] = useState();
+    // Stato della città da cercare
+    const [city, setCity] = useState('');
 
-    //submit del form
+    // Submit del form
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        let data;
-        // imposta i dati meteorologici solo se la query non è vuota
+    
+        setLoading(true);
+    
         if (querySearch.trim() !== '') {
-            data = await fetchWeatherData(querySearch);
-            setWeatherData(data);
-
-            //setta la citta da cercare
-            setCity(querySearch);
-
-            const { city, forecast } = weatherData;
-            //il json da inviare al db prende solo i dati di oggi
-            const data_on_db = {
-                city: city.name,
-                country: forecast[0].country,
-                day: forecast[0].day,
-                forecastText: forecast[0].forecastText,
-                maxTempCelsius: forecast[0].maxTempCelsius,
-                minTempCelsius: forecast[0].minTempCelsius,
-                windAverageKmh: forecast[0].windAverageKmh
+            const data = await fetchWeatherData(querySearch);
+            if (data && data.city) {
+                setWeatherData(data);
+                setCity(querySearch);
+    
+                console.log(weatherData);
+                console.log("CITTA" + data.city.name);
+                const data_on_db = {
+                    name: data.city.name,
+                    country: data.city.country,
+                    day: data.forecast[0].day,
+                    forecastText: data.forecast[0].forecastText,
+                    maxTempCelsius: data.forecast[0].maxTempCelsius,
+                    minTempCelsius: data.forecast[0].minTempCelsius,
+                    windAverageKmh: data.forecast[0].windAverageKmh
+                };
+    
+                WeatherRegister(data_on_db);
+            } else {
+                console.error("City data not available");
             }
-            //salvataggio sul db:
-            WeatherRegister(data_on_db);
         }
-        
+    
+        setLoading(false);
     };
 
-    // handle input barra di ricerca
+    // Handle input barra di ricerca
     const handleInputForm = (event) => {
         setQuerySearch(event.target.value);
     };
@@ -62,10 +67,14 @@ export function Search() {
                                 </div>
                             </div>
                         </form>
-                        {weatherData && (
-                            <div>
-                                <ReactWeather city={city} />
-                            </div>
+                        {loading ? (
+                            <p>Caricamento...</p>
+                        ) : (
+                            weatherData && (
+                                <div>
+                                    <ReactWeather city={city} />
+                                </div>
+                            )
                         )}
                     </div>
                 </div>
