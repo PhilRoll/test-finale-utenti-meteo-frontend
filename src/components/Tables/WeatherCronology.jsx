@@ -1,13 +1,29 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { GetWeatherCronology } from "../../services/RESTservice";
 import { AuthContext } from "../contexts/AuthContext";
 
 export function WeatherCronology() {
-
     const { user } = useContext(AuthContext);
+    const [cronology, setCronology] = useState([]);
 
-    let table = <></>;
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const data = await GetWeatherCronology(user.id);
+                setCronology(data);
+            } catch (error) {
+                console.error("Errore nel recupero della cronologia:", error);
+            } 
+        }
 
-    if (user.weatherForecast && user.weatherForecast.length > 0) {
+        if (user && user.id) {
+            fetchData();
+        }
+    }, [user]);
+
+    let table = null;
+
+    if (cronology.length > 0) {
         table = (
             <div className="table-responsive">
                 <h2>Cronologia di ricerche</h2>
@@ -24,7 +40,7 @@ export function WeatherCronology() {
                         </tr>
                     </thead>
                     <tbody>
-                        {user.weatherForecast.map((forecastData, index) => (
+                        {cronology.map((forecastData, index) => (
                             <tr key={index}>
                                 <td>{forecastData.name}</td>
                                 <td>{forecastData.day.substring(0, 10)}</td>
@@ -39,14 +55,13 @@ export function WeatherCronology() {
                 </table>
             </div>
         );
-    } 
-    
-    else {
+    } else {
         table = (
-            <>
+            <div>
                 <h2>Cronologia di ricerche</h2>
                 <div>Nessun meteo trovato</div>
-            </>);
+            </div>
+        );
     }
 
     return table;

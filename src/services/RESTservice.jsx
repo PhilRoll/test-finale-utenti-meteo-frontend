@@ -72,3 +72,19 @@ export async function WeatherRegister(body) {
 
     return response;
 }
+
+
+// fetch cronologia delle ricerche dell'utente
+export async function GetWeatherCronology(id) {
+
+    const response = await fetch(`http://localhost:8080/api/weather/${id}`, {
+        mode: "cors",
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer token_value"
+        }
+    });
+
+    return response.json();
+}
