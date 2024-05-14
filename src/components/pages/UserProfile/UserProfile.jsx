@@ -4,6 +4,7 @@ import { ReactWeather } from "reactjs-weather";
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserInfo } from '../../Sections/UserInfo';
 import { WeatherHistory } from '../../Tables/WeatherHistory';
+import { WeatherCronology } from '../../Tables/WeatherCronology';
 
 export function UserProfile() {
     // User dal contesto
@@ -32,7 +33,7 @@ export function UserProfile() {
 
     return (
         <div className="container my-5">
-            <UserInfo/>
+            <UserInfo />
 
             <section className="mt-5">
                 <h2>Previsioni del tempo della tua città</h2>
@@ -45,11 +46,16 @@ export function UserProfile() {
                 <>
                     {weatherData && Object.keys(weatherData).length > 0 && (
                         <section className='mt-5'>
-                            <WeatherHistory weatherData={weatherData}/>
+                            <WeatherHistory weatherData={weatherData} />
                         </section>
                     )}
                 </>
             )}
+
+            <section className='mt-5'>
+                <WeatherCronology/>
+            </section>
+
         </div>
     );
 }
