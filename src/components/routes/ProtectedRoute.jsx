@@ -7,7 +7,7 @@ export function ProtectedRoute({ children }) {
     const navigateTo = useNavigate();
 
     useEffect(() => {
-        if (!user) {
+        if (!user.isLogged) {
             navigateTo("/");
         }
     }, []);

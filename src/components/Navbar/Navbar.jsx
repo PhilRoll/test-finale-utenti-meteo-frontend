@@ -5,12 +5,13 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 
 export function Navbar() {
+    
     // Definire uno stato per gestire l'apertura/chiusura del menu
     const [isMenuOpen, setMenuOpen] = useState(false);
 
     //context dell'utente
     const {user} = useContext(AuthContext);
-
+    console.log("Valore di user:", user);
 
     // Funzione per gestire la chiusura del menu quando si seleziona un elemento
     const handleMenuClose = () => {
@@ -24,7 +25,7 @@ export function Navbar() {
 
     //Rendering condizionale, se l'utente è loggato:
     let otherPages = <></>
-    if (user) {
+    if (user.isLogged) {
         otherPages = 
         <>
         <NavLink className="nav-item nav-link" to="/user/profile" aria-current="page" onClick={handleMenuClose}>Profilo</NavLink>
