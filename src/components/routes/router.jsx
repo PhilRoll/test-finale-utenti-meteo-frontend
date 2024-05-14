@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
             },
             {
               path:"/search",
-              element: <Search/>
+              element: <AuthContextProvider><Search/></AuthContextProvider>
             },
 
           ]
@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
           children:[
             {
               path: "/userprofile",
-              element: <UserProfile/>
+              element: <AuthContextProvider><UserProfile/></AuthContextProvider>
             }
           ]
         }

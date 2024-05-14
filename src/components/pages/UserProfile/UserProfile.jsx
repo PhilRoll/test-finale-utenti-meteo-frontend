@@ -1,28 +1,34 @@
-import React, { useEffect, useState, useContext} from 'react';
-import {fetchWeatherData} from "../../../services/weatherService"
+import React, { useEffect, useState, useContext } from 'react';
+import { fetchWeatherData } from "../../../services/weatherService"
 import { ReactWeather } from "reactjs-weather";
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserInfo } from '../../Sections/UserInfo';
 import { WeatherHistory } from '../../Tables/WeatherHistory';
 
 export function UserProfile() {
-    //user dal contesto
+    // User dal contesto
     const { user } = useContext(AuthContext);
-    //stato del meteo
+    // Stato del meteo
     const [weatherData, setWeatherData] = useState({});
+    // Stato del caricamento
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchData() {
-            const data = await fetchWeatherData(user.city)
-            console.log("dati meteo")
-            console.log(weatherData);
-            setWeatherData(data);
+            try {
+                const data = await fetchWeatherData(user.city);
+                setWeatherData(data);
+            } catch (error) {
+                console.error("Errore nel recupero dei dati meteorologici:", error);
+            } finally {
+                setLoading(false);
+            }
         }
 
-        fetchData();
-    }, []);
-
-    
+        if (user.city) {
+            fetchData();
+        }
+    }, [user.city]);
 
     return (
         <div className="container my-5">
@@ -32,13 +38,18 @@ export function UserProfile() {
                 <h2>Previsioni del tempo della tua città</h2>
                 <ReactWeather city={user.city} />
             </section>
-            
-            {weatherData.main && 
-                <section className='mt-5'>
-                    <WeatherHistory weatherData={weatherData}/>
-                </section>
-            }
 
+            {loading ? (
+                <p>Caricamento...</p>
+            ) : (
+                <>
+                    {weatherData && Object.keys(weatherData).length > 0 && (
+                        <section className='mt-5'>
+                            <WeatherHistory weatherData={weatherData}/>
+                        </section>
+                    )}
+                </>
+            )}
         </div>
     );
 }
