@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 
 export function AuthContextProvider({ children }) {
   const [user, setUser] = useState({
+    id: "",
     name: "",
     lastname: "",
     email: "",
@@ -21,6 +22,7 @@ export function AuthContextProvider({ children }) {
     if (token) {
         const decodedToken = jwtDecode(token);
         setUser({
+          id: decodedToken.id,
           name: decodedToken.name,
           lastname: decodedToken.lastname,
           email: decodedToken.email,
@@ -34,6 +36,7 @@ export function AuthContextProvider({ children }) {
   const resetContext = () => {
     // Azzeramento dei valori del contesto
     setUser({
+      id: "",
       name: "",
       lastname: "",
       email: "",

@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import { fetchWeatherData } from '../../../services/weatherService';
 import { ReactWeather } from 'reactjs-weather';
 import { WeatherRegister } from '../../../services/RESTservice';
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export function Search() {
+
+    const {user} = useContext(AuthContext);
+
     // Stato del meteo
     const [weatherData, setWeatherData] = useState();
     // Stato del caricamento
@@ -28,6 +33,7 @@ export function Search() {
                 console.log(weatherData);
                 console.log("CITTA" + data.city.name);
                 const data_on_db = {
+                    userId: user.id,
                     name: data.city.name,
                     country: data.city.country,
                     day: data.forecast[0].day,

@@ -55,6 +55,7 @@ export function LoginForm() {
             console.log(decodedToken);
 
             setUser({
+                id: decodedToken.id,
                 name: decodedToken.name,
                 lastname: decodedToken.lastname,
                 email: decodedToken.email,
